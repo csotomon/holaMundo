@@ -1,25 +1,38 @@
 pipeline {
   agent {
-    docker { image 'node:latest' }
+    docker { image 'trion/ng-cli-karma:1.2.1' }
   }
   stages {
     stage('Install') {
-      steps { sh 'npm install' }
-    }
-
-    stage('Test') {
-      parallel {
-        stage('Static code analysis') {
-            steps { sh 'npm run-script lint' }
-        }
-        stage('Unit tests') {
-            steps { sh 'npm run-script test' }
-        }
+      withEnv(["NPM_CONFIG_LOGLEVEL=warn"]) {
+        sh 'npm install'
       }
     }
 
+    stage('Test') {
+      withEnv(["CHROME_BIN=/usr/bin/chromium-browser"]) {
+        sh 'ng test --progress=false --watch false'
+      }
+      junit '**/test-results.xml'
+    }
+
+    stage('Lint') {
+      sh 'ng lint'
+    }
+
     stage('Build') {
-      steps { sh 'npm run-script build' }
+      milestone()
+        sh 'ng build --prod --aot --sm --progress=false'
+    }
+
+    stage('Archive') {
+      sh 'tar -cvzf dist.tar.gz --strip-components=1 dist'
+      archive 'dist.tar.gz'
+    }
+
+    stage('Deploy') {
+      milestone()
+      echo "Deploying..."
     }
   }
 }
