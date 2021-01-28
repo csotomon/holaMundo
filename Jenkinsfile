@@ -22,7 +22,9 @@ pipeline {
     }
 
     stage('Lint') {
-      sh 'ng lint'
+      steps {
+        sh 'ng lint'
+      }
     }
 
 //     stage('Build') {
