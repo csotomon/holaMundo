@@ -4,24 +4,26 @@ pipeline {
   }
   stages {
     stage('Install') {
-      environment {
-        NPM_CONFIG_LOGLEVEL='warn'
-      }
+      // environment {
+      //   NPM_CONFIG_LOGLEVEL='warn'
+      // }
       steps {
         sh 'npm install'
       }
     }
 
-//     stage('Test') {
-//       withEnv(["CHROME_BIN=/usr/bin/chromium-browser"]) {
-//         sh 'ng test --progress=false --watch false'
-//       }
-//       junit '**/test-results.xml'
-//     }
+    stage('Test') {
+      environment {
+        CHROME_BIN='/usr/bin/chromium-browser'
+      }
+      steps {
+        sh 'ng test'
+      }
+    }
 
-//     stage('Lint') {
-//       sh 'ng lint'
-//     }
+    stage('Lint') {
+      sh 'ng lint'
+    }
 
 //     stage('Build') {
 //       milestone()
