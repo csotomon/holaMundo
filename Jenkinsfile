@@ -17,7 +17,7 @@ pipeline {
         CHROME_BIN='/usr/bin/chromium-browser'
       }
       steps {
-        sh 'ng test'
+        sh 'ng test --progress=false --watch false'
       }
     }
 
