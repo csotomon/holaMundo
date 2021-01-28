@@ -37,5 +37,5 @@ pipeline {
 //       milestone()
 //       echo "Deploying..."
 //     }
-//   }
-// }
+  }
+}
